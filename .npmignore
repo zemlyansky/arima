@@ -1,0 +1,4 @@
+node_modules/
+ctsa/
+*.swp
+npm-debug.log

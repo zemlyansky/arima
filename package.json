@@ -1,0 +1,32 @@
+{
+  "name": "arima",
+  "version": "0.0.1",
+  "description": "Univariate ARIMA model",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rimraf wasm && rimraf wrapper",
+    "mkdirs": "mkdir wasm && mkdir wrapper",
+    "prepare-wasm": "node prepare-wasm.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run clean && npm run mkdirs && make build && npm run prepare-wasm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zemlyansky/arima"
+  },
+  "keywords": [
+    "arima",
+    "timeseries",
+    "prediction",
+    "forecasting",
+    "statistics",
+    "webassembly"
+  ],
+  "devDependencies": {
+    "faucet": "0.0.1",
+    "rimraf": "^3.0.2",
+    "tape": "^4.13.2"
+  },
+  "author": "Anton Zemlyansky",
+  "license": "MIT"
+}

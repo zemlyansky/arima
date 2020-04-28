@@ -1,0 +1,5 @@
+node_modules/
+wrapper/
+wasm/
+*.swp
+npm-debug.log
