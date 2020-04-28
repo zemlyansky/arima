@@ -23,7 +23,6 @@
     "webassembly"
   ],
   "devDependencies": {
-    "faucet": "0.0.1",
     "rimraf": "^3.0.2",
     "tape": "^4.13.2"
   },
