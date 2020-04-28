@@ -23,9 +23,9 @@
     "webassembly"
   ],
   "devDependencies": {
-    "rimraf": "^3.0.2",
-    "tape": "^4.13.2"
+    "rimraf": "^3.0.2"
   },
   "author": "Anton Zemlyansky",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {}
 }
