@@ -37,3 +37,7 @@ Method 5 - BFGS
 Method 6 - Limited Memory BFGS (Default)
 Method 7 - BFGS Using More Thuente Method
 ```
+
+### Web demo
+You can try ARIMA online in the Forecast app:  [https://statsim.com/forecast/](https://statsim.com/forecast/).
+It uses the `arima` package under the hood and applies random search method to find the best values of `p`, `d` and `q`.
