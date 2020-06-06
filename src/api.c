@@ -11,7 +11,7 @@ double* arima (double* ts, int p, int d, int q, int lin, int lout, int method, i
   */
 
   double *phi, *theta;
-  double *xpred, *amse;
+  double *res, *amse;
 
   theta = (double*)malloc(sizeof(double) * q);
   phi = (double*)malloc(sizeof(double) * p);
@@ -22,10 +22,10 @@ double* arima (double* ts, int p, int d, int q, int lin, int lout, int method, i
   arima_setOptMethod(obj, opt);
   arima_exec(obj, ts);
 
-  xpred = (double*)malloc(sizeof(double) * lout);
-  amse = (double*)malloc(sizeof(double) * lout);
+  res = (double*)malloc(sizeof(double) * lout * 2);
+  amse = res + lout;
 
-  arima_predict(obj, ts, lout, xpred, amse);
+  arima_predict(obj, ts, lout, res, amse);
 
   if (verbose) {
     arima_summary(obj);
@@ -33,8 +33,7 @@ double* arima (double* ts, int p, int d, int q, int lin, int lout, int method, i
 
   free(phi);
   free(theta);
-  free(amse);
 
-  return xpred;
+  return res;
 }
 

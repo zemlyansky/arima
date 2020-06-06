@@ -8,6 +8,20 @@ function uintify (arr) {
   return new Uint8Array(Float64Array.from(arr).buffer)
 }
 
+function flat (arr) {
+  return [].concat.apply([], arr)
+}
+
+function prepare (arr) {
+  const farr = flat(arr)
+  for (let i = 0; i < farr.length - 2; i++) {
+    if (isNaN(farr[i + 1])) {
+      farr[i + 1] = farr[i]
+    }
+  }
+  return farr
+}
+
 const defaults = {
   method: 0,
   optimizer: 6,
@@ -19,7 +33,7 @@ const defaults = {
 
 module.exports = function predict (input, length, opts) {
   const options = Object.assign({}, defaults, opts)
-  const ts = uintify(input.flat())
+  const ts = uintify(prepare(input))
   const addr = _arima(
     ts,
     options.p,
@@ -31,9 +45,9 @@ module.exports = function predict (input, length, opts) {
     options.optimizer,
     options.verbose
   )
-  const data = []
-  for (let i = 0; i < length; i++) {
-    data.push(m.HEAPF64[addr / Float64Array.BYTES_PER_ELEMENT + i])
+  const res = [[], []]
+  for (let i = 0; i < length * 2; i++) {
+    res[i < length ? 0 : 1].push(m.HEAPF64[addr / Float64Array.BYTES_PER_ELEMENT + i])
   }
-  return data
+  return res
 }

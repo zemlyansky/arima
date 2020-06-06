@@ -5,11 +5,11 @@
 Emscripten port of the native C package [ctsa](https://github.com/rafat/ctsa) for univariate time series analysis and prediction.
 
 ### API
-Interface of `arima` consists of only one function that takes a 1D vector with observations over time, number of time steps to predict and ARIMA parameters p, d, q. Returns a vector with predictions.
+Interface of `arima` consists of only one function that takes a 1D vector with observations over time, number of time steps to predict and ARIMA parameters p, d, q. Returns two vectors - predictions and mean square errors.
 
 ```javascript
 const arima = require('arima')
-const pred = arima(ts, 20, {
+const [pred, errors] = arima(ts, 20, {
   method: 0, // ARIMA method (Default: 0)
   optimizer: 6, // Optimization method (Default: 6)
   p: 1, // Number of Autoregressive coefficients
