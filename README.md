@@ -82,6 +82,7 @@ const sarima = new ARIMA({
 
 // Predict next 12 values
 const [pred, errors] = sarima.predict(12)
+```
 
 ### Example: SARIMAX
 ```javascript
