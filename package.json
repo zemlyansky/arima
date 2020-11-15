@@ -1,13 +1,13 @@
 {
   "name": "arima",
-  "version": "0.1.0",
-  "description": "Univariate ARIMA model",
+  "version": "0.2.0",
+  "description": "ARIMA, SARIMA, SARIMAX and AutoARIMA models for time series analysis and forecasting",
   "main": "index.js",
   "scripts": {
     "clean": "rimraf wasm && rimraf wrapper",
     "mkdirs": "mkdir wasm && mkdir wrapper",
-    "prepare-wasm": "node prepare-wasm.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare-wasm": "jsmaker wasm/native.wasm -t uint8 > wrapper/native.bin.js",
+    "test": "tape test.js | faucet",
     "build": "npm run clean && npm run mkdirs && make build && npm run prepare-wasm"
   },
   "repository": {
@@ -16,14 +16,21 @@
   },
   "keywords": [
     "arima",
+    "sarima",
+    "sarimax",
+    "autoarima",
     "timeseries",
     "prediction",
     "forecasting",
     "statistics",
-    "webassembly"
+    "webassembly",
+    "wasm"
   ],
   "devDependencies": {
-    "rimraf": "^3.0.2"
+    "faucet": "0.0.1",
+    "jsmaker": "0.0.2",
+    "rimraf": "^3.0.2",
+    "tape": "^5.0.1"
   },
   "author": "Anton Zemlyansky",
   "license": "MIT",

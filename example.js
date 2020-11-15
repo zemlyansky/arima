@@ -1,22 +1,10 @@
-const arima = require('.')
+const ARIMA = require('.')
 
-const n = 1000
-const l = 30
+// const ts = [100,0,0,0,0,0,0,150,0,0,204,0,0,0]
 
-const ts = Array(n).fill(0).map((v, i) => Math.sin(i / 3) + Math.random() / 1.5)
-ts[100] = '--'
-ts[500] = undefined
-
-const [pred, errors] = arima(ts.slice(0, n - l), l, {
-  method: 0,
-  optimizer: 6,
-  p: 10,
-  q: 0,
-  d: 1,
-  verbose: false
-})
-
-console.log('Ytrue,Ypred,Err')
-pred.forEach((v, i) => {
-  console.log(ts[n - l + i] + ',' + v + ',' + errors[i])
-})
+for (let i = 1; i < 10; i++) {
+  const ts = Array(24).fill(0).map((_, i) => i + Math.random() / 5)
+  const arima = new ARIMA({ p: 2, d: 1, q: 2, P: 1, D: 0, Q: 1, S: 12, verbose: false }).train(ts)
+  const [pred, errors] = arima.predict(12)
+  console.log(pred, errors)
+}
