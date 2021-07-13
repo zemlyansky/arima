@@ -1,25 +1,25 @@
-# arima
+# ARIMA. Time-series forecasting in browsers and Node.js
 
-**Emscripten port of the native C package [ctsa](https://github.com/rafat/ctsa) for time series analysis and forecasting**
+### Emscripten port of the native C package [ctsa](https://github.com/rafat/ctsa) for time series analysis and forecasting
 
-Includes:
+This CommonJS module includes:
 - **ARIMA** (Autoregressive Integrated Moving Average)
 - **SARIMA** (Seasonal ARIMA)
 - **SARIMAX** (Seasonal ARIMA with exogenous variables)
 - **AutoARIMA** (ARIMA with automatic parameters)
 
-### Installation
+### Installation of the ARIMA module
 ```bash
 npm install arima
 ```
 
-### Init
+### Initialization
 ```javascript
 const ARIMA = require('arima')
-const arima = new ARIMA(opts)
+const arima = new ARIMA(options)
 ```
 
-Where the `opts` object can include:
+Where the `options` object can include:
 - `auto` - automatic ARIMA (default: `false`)
 - `p`, `d`, `q` params for ARIMA (default: `p: 1, d: 0, q: 1`)
 - `P`, `D`, `Q`, `s` seasonal params (default: `0`s). Setting them to non-zero values makes the ARIMA model seasonal
@@ -151,5 +151,5 @@ const [pred, errors] = arima(ts, 20, {
 ```
 
 ### Web demo
-You can try ARIMA online in the Forecast app:  [https://statsim.com/forecast/](https://statsim.com/forecast/).
-It uses the `arima` package under the hood and applies random search method to find the best values of `p`, `d` and `q`.
+You can try ARIMA online in the **StatSim Forecast** app:  [https://statsim.com/forecast/](https://statsim.com/forecast/).
+It uses the `arima` package under the hood and applies random search to find the best values of `p`, `d` and `q`.

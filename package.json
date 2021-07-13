@@ -1,6 +1,6 @@
 {
   "name": "arima",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "ARIMA, SARIMA, SARIMAX and AutoARIMA models for time series analysis and forecasting",
   "main": "index.js",
   "scripts": {
