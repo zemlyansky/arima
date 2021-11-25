@@ -1,6 +1,6 @@
 const Module = require('./wasm/native.js')
 const bin = require('./wrapper/native.bin.js')
-const m = Module({ wasmBinary: bin.data })
+const m = Module({ wasmBinary: bin })
 
 const _fit_sarimax = m.cwrap('fit_sarimax', 'number', ['array', 'array', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'boolean'])
 const _predict_sarimax = m.cwrap('predict_sarimax', 'number', ['number', 'array', 'array', 'array', 'number'])
