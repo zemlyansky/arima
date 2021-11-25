@@ -46,6 +46,25 @@ arima.train(ts, exog) // or arima.fit(ts, exog)
 arima.predict(10, exognew) // Predict 10 steps forwars using new exogenous variables
 ```
 
+### Running in browsers
+As described in the issue [#10](https://github.com/zemlyansky/arima/issues/10) Chrome prevents compilation of wasm modules >4kB.
+There are two ways to overcome this:
+  - Load `arima` in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
+  - Use the `arima/async` module 
+
+Example of async loading:
+```javascript
+const ARIMAPromise = require('arima/async')
+
+ARIMAPromise.then(ARIMA => {
+  const ts = Array(10).fill(0).map((_, i) => i + Math.random() / 5)
+  const arima = new ARIMA({ p: 2, d: 1, q: 2, P: 0, D: 0, Q: 0, S: 0, verbose: false }).train(ts)
+  const [pred, errors] = arima.predict(10)
+})
+```
+All following examples use **synchronous** compilation (Node.js, Firefox). They will not work in Chrome.
+
+
 ### Example: ARIMA
 ```javascript
 // Load package
