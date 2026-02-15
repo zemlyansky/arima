@@ -3,3 +3,6 @@ wrapper/
 wasm/
 *.swp
 npm-debug.log
+AGENTS.md
+CLAUDE.md
+.claude/

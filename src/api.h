@@ -11,6 +11,9 @@ sarimax_object* fit_sarimax (double* ts, double* exog, int p, int d, int q, int 
 double* predict_sarimax (sarimax_object* obj, double* ts, double* exog, double* newexog, int lout);
 auto_arima_object* fit_autoarima (double* ts, double* exog, int p, int d, int q, int P, int D, int Q, int s, int nexog, int lin, int method, int opt, int approximation, int search, _Bool verbose);
 double* predict_autoarima (auto_arima_object* obj, double* ts, double* exog, double* newexog, int lout);
+void free_sarimax (sarimax_object* obj);
+void free_autoarima (auto_arima_object* obj);
+void free_result (double* res);
 
 #ifdef __cplusplus
 }

@@ -1,8 +1,35 @@
 {
   "name": "arima",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "ARIMA, SARIMA, SARIMAX and AutoARIMA models for time series analysis and forecasting",
   "main": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "require": "./index.js",
+      "default": "./index.js"
+    },
+    "./async": {
+      "types": "./async.d.ts",
+      "require": "./async.js",
+      "default": "./async.js"
+    }
+  },
+  "browser": {
+    "fs": false,
+    "path": false
+  },
+  "files": [
+    "index.js",
+    "async.js",
+    "load.js",
+    "index.d.ts",
+    "async.d.ts",
+    "wasm/",
+    "wrapper/",
+    "README.md"
+  ],
   "scripts": {
     "clean": "rimraf wasm && rimraf wrapper",
     "mkdirs": "mkdir wasm && mkdir wrapper",

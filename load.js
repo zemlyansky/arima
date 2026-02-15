@@ -24,7 +24,7 @@ const defaults = {
   method: 0,
   optimizer: 6,
   s: 0,
-  verbose: true,
+  verbose: false,
   transpose: false,
   auto: false,
   approximation: 1,
@@ -54,6 +54,9 @@ module.exports = function (m) {
   const _predict_sarimax = m.cwrap('predict_sarimax', 'number', ['number', 'array', 'array', 'array', 'number'])
   const _fit_autoarima = m.cwrap('fit_autoarima', 'number', ['array', 'array', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'boolean'])
   const _predict_autoarima = m.cwrap('predict_autoarima', 'number', ['number', 'array', 'array', 'array', 'number'])
+  const _free_sarimax = m.cwrap('free_sarimax', null, ['number'])
+  const _free_autoarima = m.cwrap('free_autoarima', null, ['number'])
+  const _free_result = m.cwrap('free_result', null, ['number'])
 
   function getResults (addr, l) {
     const res = [[], []]
@@ -67,10 +70,14 @@ module.exports = function (m) {
     // Preserve the old functional API: ARIMA(ts, len, opts)
     if (!(this instanceof ARIMA)) {
       console.warn('Calling ARIMA as a function will be deprecated in the future')
-      return (new ARIMA(arguments[2])).train(arguments[0]).predict(arguments[1])
+      var tmp = new ARIMA(arguments[2])
+      tmp.train(arguments[0])
+      var result = tmp.predict(arguments[1])
+      tmp.destroy()
+      return result
     }
     // A new, class API has opts as the only argument here: new ARIMA (opts)
-    const opts = arguments[0]
+    const opts = arguments[0] || {}
     const o = Object.assign({}, defaults, opts.auto ? paramsAuto : params, opts)
     if (Math.min(o.method, o.optimizer, o.p, o.d, o.q, o.P, o.D, o.Q, o.s) < 0) {
       throw new Error('Model parameter can\'t be negative')
@@ -87,6 +94,28 @@ module.exports = function (m) {
     const o = this.options
     if (o.transpose && Array.isArray(exog[0])) {
       exog = transpose(exog)
+    }
+    // Guard against short series that would crash WASM (Issue #4)
+    var minLength
+    if (o.auto) {
+      minLength = Math.max(2 * o.s + o.d, 20)
+    } else {
+      minLength = o.d + o.s * o.D + Math.max(o.p + o.q, 2 * o.s, 10)
+    }
+    if (ts.length < minLength) {
+      throw new Error(
+        'Series too short (' + ts.length + ' values). ' +
+        'Minimum length for these parameters is ' + minLength
+      )
+    }
+    // Free previous model if re-training (Issue #11)
+    if (this.model) {
+      if (o.auto) {
+        _free_autoarima(this.model)
+      } else {
+        _free_sarimax(this.model)
+      }
+      this.model = null
     }
     this.ts = uintify(prepare(ts))
     this.exog = uintify(prepare(exog))
@@ -142,7 +171,20 @@ module.exports = function (m) {
         uintify(prepare(exog)), // new
         l
       )
-    return getResults(addr, l)
+    var results = getResults(addr, l)
+    _free_result(addr)
+    return results
+  }
+
+  ARIMA.prototype.destroy = function () {
+    if (this.model) {
+      if (this.options.auto) {
+        _free_autoarima(this.model)
+      } else {
+        _free_sarimax(this.model)
+      }
+      this.model = null
+    }
   }
 
   return ARIMA

@@ -26,7 +26,7 @@ Where the `options` object can include:
 - `method` - ARIMA method (default: 0, described below)
 - `optimizer` - optimization method (default: 6, described below)
 - `transpose` - transpose exogenous array when fitting SARIMAX (default: `false`)
-- `verbose` - verbose output (default: `true`)
+- `verbose` - verbose output (default: `false`)
 
 Also for `AutoARIMA` only:
 - `approximation` - approximation method (default: `1`),
@@ -149,6 +149,21 @@ Method 6 - Limited Memory BFGS (Default)
 Method 7 - BFGS Using More Thuente Method
 ```
 
+### Cleanup
+When you're done with a model instance, call `.destroy()` to free WASM memory:
+```javascript
+const arima = new ARIMA({ p: 2, d: 1, q: 2 }).train(ts)
+const [pred, errors] = arima.predict(12)
+arima.destroy()
+```
+This is especially important when creating many model instances (e.g. in a loop or optimization). Re-training an existing instance (calling `.train()` again) automatically frees the previous model.
+
+### Minimum series length
+The input time series must be long enough for the model parameters. If the series is too short, `.train()` will throw an error with the required minimum length. As a rule of thumb, provide at least 10 observations for simple ARIMA, and at least `2*s` observations for seasonal models.
+
+### Known AutoARIMA limitations
+AutoARIMA (Issues [#7](https://github.com/zemlyansky/arima/issues/7), [#12](https://github.com/zemlyansky/arima/issues/12)) may produce inaccurate results with certain data patterns. If predictions seem wrong, try manually specifying `p`, `d`, `q` (and seasonal `P`, `D`, `Q`, `s`) instead of using `auto: true`.
+
 ### Old functional API (still works)
 The old interface of the `arima` package was only one function that took 3 arguments:
 - a 1D array with observations over time
@@ -165,7 +180,7 @@ const [pred, errors] = arima(ts, 20, {
   p: 1, // Number of Autoregressive coefficients
   d: 0, // Number of times the series needs to be differenced
   q: 1, // Number of Moving Average Coefficients
-  verbose: true // Output model analysis to console
+  verbose: false // Output model analysis to console (Default: false)
 })
 ```
 
