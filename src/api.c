@@ -61,8 +61,8 @@ auto_arima_object* fit_autoarima (double* ts, double* exog, int p, int d, int q,
   auto_arima_setApproximation(*obj, approximation);
   auto_arima_setStepwise(*obj, search);
   auto_arima_setVerbose(*obj, verbose ? 1 : 0);
-  //auto_arima_setMethod(*obj, method);
-  //auto_arima_setOptMethod(*obj, opt);
+  auto_arima_setMethod(*obj, method);
+  auto_arima_setOptMethod(*obj, opt);
 
   auto_arima_exec(*obj, ts, exog);
 
