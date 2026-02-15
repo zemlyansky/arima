@@ -61,8 +61,8 @@ auto_arima_object* fit_autoarima (double* ts, double* exog, int p, int d, int q,
   auto_arima_setApproximation(*obj, approximation);
   auto_arima_setStepwise(*obj, search);
   auto_arima_setVerbose(*obj, verbose ? 1 : 0);
-  auto_arima_setMethod(*obj, method);
-  auto_arima_setOptMethod(*obj, opt);
+  //auto_arima_setMethod(*obj, method);
+  //auto_arima_setOptMethod(*obj, opt);
 
   auto_arima_exec(*obj, ts, exog);
 
@@ -84,4 +84,22 @@ double* predict_autoarima (auto_arima_object* obj, double* ts, double* exog, dou
   return res;
 }
 
+void free_sarimax (sarimax_object* obj) {
+  if (obj != NULL) {
+    sarimax_free(*obj);
+    free(obj);
+  }
+}
 
+void free_autoarima (auto_arima_object* obj) {
+  if (obj != NULL) {
+    auto_arima_free(*obj);
+    free(obj);
+  }
+}
+
+void free_result (double* res) {
+  if (res != NULL) {
+    free(res);
+  }
+}
