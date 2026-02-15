@@ -71,7 +71,7 @@ All following examples use **synchronous** compilation (Node.js, Firefox). They 
 const ARIMA = require('arima')
 
 // Synthesize timeseries
-const ts = Array(24).fill(0).map((_, i) => i + Math.random() / 5)
+const ts = Array(30).fill(0).map((_, i) => i + Math.random() / 5)
 
 // Init arima and start training
 const arima = new ARIMA({
