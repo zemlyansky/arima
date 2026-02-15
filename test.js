@@ -371,3 +371,82 @@ test('SARIMAX with 3 exogenous variables', (_) => {
   m.destroy()
   _.end()
 })
+
+// --- Phase 1 edge case tests ---
+
+test('require("arima") returns a constructor function', (_) => {
+  var A = require('.')
+  _.equal(typeof A, 'function', 'is a function')
+  var m = new A({ p: 1, d: 0, q: 1 })
+  _.true(m instanceof A, 'instanceof works')
+  _.end()
+})
+
+test('require("arima/async") returns a Promise', (_) => {
+  var result = require('./async')
+  _.true(result instanceof Promise || typeof result.then === 'function', 'is thenable')
+  result.then(function (A) {
+    _.equal(typeof A, 'function', 'resolves to constructor')
+    _.end()
+  })
+})
+
+test('Constant series (all same value)', (_) => {
+  var ts = Array(30).fill(42)
+  var m = new ARIMA({ p: 1, d: 0, q: 1 })
+  m.train(ts)
+  var res = m.predict(5)
+  _.equal(res[0].length, 5, 'predictions returned')
+  // Predictions for constant series should be close to the constant
+  var allClose = res[0].every(function (v) { return Math.abs(v - 42) < 5 })
+  _.true(allClose, 'predictions near constant value')
+  m.destroy()
+  _.end()
+})
+
+test('Series with NaN values (filled by prepare())', (_) => {
+  var ts = [1, 2, NaN, 4, 5, 6, NaN, 8, 9, 10, 11, 12, 13, 14, 15]
+  var m = new ARIMA({ p: 1, d: 0, q: 1 })
+  m.train(ts)
+  var res = m.predict(3)
+  _.equal(res[0].length, 3, 'predictions returned')
+  _.false(res[0].some(isNaN), 'no NaN in predictions')
+  m.destroy()
+  _.end()
+})
+
+test('predict(0) returns empty arrays', (_) => {
+  var ts = Array(30).fill(0).map((_, i) => i + Math.random() / 5)
+  var m = new ARIMA({ p: 1, d: 0, q: 1 })
+  m.train(ts)
+  var res = m.predict(0)
+  _.true(Array.isArray(res[0]), 'predictions is array')
+  _.true(Array.isArray(res[1]), 'errors is array')
+  _.equal(res[0].length, 0, 'empty predictions')
+  _.equal(res[1].length, 0, 'empty errors')
+  m.destroy()
+  _.end()
+})
+
+test('Large horizon: predict(200)', (_) => {
+  var ts = Array(50).fill(0).map((_, i) => i + Math.random() / 5)
+  var m = new ARIMA({ p: 1, d: 0, q: 1 })
+  m.train(ts)
+  var res = m.predict(200)
+  _.equal(res[0].length, 200, '200 predictions')
+  _.equal(res[1].length, 200, '200 errors')
+  _.false(res[0].some(isNaN), 'no NaN in predictions')
+  m.destroy()
+  _.end()
+})
+
+test('SARIMAX with empty exog (same as no exog)', (_) => {
+  var ts = Array(30).fill(0).map((_, i) => i + Math.random() / 5)
+  var m = new ARIMA({ p: 1, d: 0, q: 1 })
+  m.train(ts, [])
+  var res = m.predict(5, [])
+  _.equal(res[0].length, 5)
+  _.false(res[0].some(isNaN), 'no NaN with empty exog')
+  m.destroy()
+  _.end()
+})
